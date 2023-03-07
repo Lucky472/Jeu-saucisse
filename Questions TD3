@@ -1,14 +1,41 @@
 Questions TD3:
 
 1.1 Jeu:
+Etat du Jeu = En cours / Fini 
+Variable activePlayer pour savoir quel joueur est actif
+Affiché sur l'écran
 
 1.2 Plateau
-
+Afficher sur un canvas : 32 points : 5 par lignes paires , 4 par lignes impaires
+                         Les saucisses posées
+                         
+Au dessus: Timer des 2 joueurs , Pseudo,
+           bouton abandonner pour le joueur actif
+           bouton retracer ( tant que pas 3 points sélectionnés) 
 1.3 Point
+Etat: Selectionné, Occupé, Libre
+
+      Libre    -->    Selectionné        -->        Occupé
+          (relâche clic)        (3 points sélectionnés)
+          
+      Sélectionné         -->             Libre 
+            (si début de saucisse est annulé)
 
 1.4 Joueur 
+Actions possibles: Cliquer 3 points successivement
+                   Cliquer 1 ou 2 points et appuyer sur le bouton retracer
+                   Cliquer sur le bouton "abandonner"
+On considère le point cliqué quand le clic est relâché
+Objectif: Gagner ou Perdre face au 2ème joueur
+Plateau de jeu change quand 3 points sont sélectionnés (trace une saucisse)
+Points changent d'état quand on les sélectionne, changent aussi quand 3 sont sélectionnés.
 
 1.5 Graphisme
+Forme Saucisse: Trait avec une épaisseur importante
+Couleurs: Libre = Bleu
+          Selectionné = Couleur du Joueur actif
+          Occupé = Couleur du Joueur qui a posé la saucisse
 
 1.6 Ergonomie
-
+Bouton revenir en arrière si la saucisse n'a pas été completée
+Si les 3 points sont sélectionnés la saucisse est posée automatiquement
