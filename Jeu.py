@@ -6,7 +6,6 @@ Created on Tue Mar  7 08:08:32 2023
 @author: kchateau
 """
 from tkinter import *
-from Point import *
 
 widthCanvas = 800
 heightCanvas = 800
@@ -59,6 +58,6 @@ class GameEngine:
 
 root = Tk()
 root.title("SaucisseTheGame")
-game = Game(root)
+game = GameShow(root)
 
 root.mainloop()
