@@ -33,7 +33,7 @@ class Game:
         self.labelActivePlayer.pack(expand=YES)
 
         self.listPoint =  []
-
+        self.test = "bit"
         
 """Jeu"""        #Etats : en cours, fini
         #self.activePlayer
