@@ -38,6 +38,7 @@ class GameShow:
 class GameEngine:
     def __init__(self):
         self.temp = "temp"
+        self.temp2 = "adrien teste un truc"
 
 """Jeu"""        #Etats : en cours, fini
         #self.activePlayer
