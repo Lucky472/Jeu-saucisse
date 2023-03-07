@@ -14,10 +14,6 @@ colorCanvas = "#000000"
 
 
 
-class GameEngine:
-    def __init__(self):
-        self.temp = "temp"
-
 class GameShow:
     def __init__(self,window):
         #Initialise l'interface graphique
@@ -36,8 +32,13 @@ class GameShow:
         self.labelActivePlayer.pack(expand=YES)
 
         self.listPoint =  []
-        self.test = "bit"
-   
+  
+    
+
+class GameEngine:
+    def __init__(self):
+        self.temp = "temp"
+
 """Jeu"""        #Etats : en cours, fini
         #self.activePlayer
         #textvariable "pseudo"
