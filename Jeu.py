@@ -38,9 +38,14 @@ class GameShow:
         self.canvas.pack(expand=YES)
         self.labelActivePlayer.pack(expand=YES)
 
+        self.draw_board()
+        
     def draw_board(self):
         #parcours la liste et quand il y a un point il le dessine 
-        pass
+        for i in range(0,9):
+            for j in range(0,7):
+                if i+j %2 == 0:
+                    self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS)
 
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
@@ -64,14 +69,22 @@ class GameEngine:
         self.board = self.set_new_board()
         self.activePlayer = "UI"
 
-
     def on_click(self,evt):
         # Adrien l'a dans sa tête
         pass
 
     def set_new_board(self):
-        #Créer le tableau 2D avec des points en i+j pair et crossing sinon
-        pass
+        #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
+        point =[]
+        for i in range(0,9):
+            for j in range(0,7):
+                if (i+j)%2 == 0:
+                    point[i][j] = Point()
+                else:
+                    point[i][j] = Crossing()
+        return point
+
+
     
     def game_over_test(self):
         #teste si des coups sont encore possibles sur le plateau
