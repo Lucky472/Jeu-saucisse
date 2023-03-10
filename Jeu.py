@@ -17,8 +17,8 @@ WIDTHCANVAS = 800
 HEIGHTCANVAS = 800
 COLORCANVAS = "#000000"
 COLORPOINT = "#FFFFFF"
-
-
+LENGTH_OF_THE_X_AXIS = 9
+LENGTH_OF_THE_Y_AXIS = 7
 
 class GameShow:
     def __init__(self,window):
@@ -43,14 +43,18 @@ class GameShow:
         
     def draw_board(self):
         #parcours la liste et quand il y a un point il le dessine 
-        for i in range(0,9):
-            for j in range(0,7):
+        for i in range(0,LENGTH_OF_THE_X_AXIS):
+            for j in range(0,LENGTH_OF_THE_Y_AXIS):
                 if (i+j) %2 == 0:
                   self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
                   print(self.game_engine.board[i][j].id)
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
         self.game_engine.on_click(evt)
+        if len(self.game_engine.selected_dots) == 3 :
+            self.draw_sausage(self.game_engine.selected_dots)
+            self.game_engine.selected_dots = []
+            #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
         pass
     
     def draw_sausage(self,points):
@@ -69,17 +73,27 @@ class GameEngine:
     def __init__(self):
         self.board = self.set_new_board()
         self.activePlayer = "UI"
-
+        self.selected_dots = []
+        
     def on_click(self,evt):
-        # Adrien l'a dans sa tête
+        """
+        si le point cliqué peut être séléctionné : séléctionne le point
+        """
+        dot = self.check_coord_mouse(evt)
+        if dot != None and dot not in self.selected_dots :
+            self.selected_dots.append(dot)
+        self.update_dots_clickability()
+
+    def update_dots_clickability():
+        
         pass
 
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
-        point = [[0 for j in range(7)] for i in range(9)]
+        point = [[0 for j in range(LENGTH_OF_THE_Y_AXIS)] for i in range(LENGTH_OF_THE_X_AXIS)]
 
-        for i in range(0,9):
-            for j in range(0,7):
+        for i in range(0,LENGTH_OF_THE_X_AXIS):
+            for j in range(0,LENGTH_OF_THE_Y_AXIS):
                 if (i+j)%2 == 0:
                     point[i][j] = Point()
                 else:
@@ -103,7 +117,7 @@ class GameEngine:
 
 
     def check_coord_mouse(self,evt):
-        #vérifie si la souris clique sur un point
+        #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
         pass
     
     
@@ -112,6 +126,7 @@ class Point:
         self.occupied = False
         self.degree = 0
         self.id = 0
+        self.can_be_clicked = True
 
         #ADRIEN A L'IDEE, TABLEAU COORDONNES DE POINTS A DOUBLE ENTREE JE SAIS PLUS QUOI 
         pass
