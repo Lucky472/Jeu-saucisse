@@ -6,6 +6,7 @@ Created on Tue Mar  7 08:08:32 2023
 @author: kchateau
 """
 from tkinter import *
+from math import sqrt
 
 RADIUS = 15
 XMIN = 20
@@ -20,7 +21,6 @@ COLORPOINT = "#416FEC"
 
 class GameShow:
     def __init__(self,window):
-        self.game_engine = GameEngine()
         #BIND LE CLIC 
 
 
@@ -29,8 +29,9 @@ class GameShow:
         self.plateau = Frame()
         self.menu = Frame()
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS)
-        
+        self.game_engine = GameEngine(self.canvas)
         self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.activePlayer)
+        self.canvas.bind("<Button-1>",self.on_click)
         #Pack l'interface graphique
         self.plateau.pack(expand=YES,side=LEFT)
         self.menu.pack(expand=YES,side=RIGHT)
@@ -67,14 +68,15 @@ class GameShow:
 
 
 class GameEngine:
-    def __init__(self):
+    def __init__(self,canvas):
+        self.canvas = canvas
         self.board = self.set_new_board()
         self.activePlayer = "UI"
         self.selected_dots = []
         
     def on_click(self,evt):
         """
-        si le point cliqué peut être séléctionné : séléctionne le point
+        si le point cliqué peut être sélectionné : sélectionne le point
         """
         dot = self.check_coord_mouse(evt)
         if dot != None and dot not in self.selected_dots :
@@ -90,6 +92,7 @@ class GameEngine:
         """
         teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement'
         """
+
         pass
 
     def set_new_board(self):
@@ -122,7 +125,26 @@ class GameEngine:
 
     def check_coord_mouse(self,evt):
         #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
-        pass
+        x = evt.x
+        y = evt.y
+        for i in range(0,9):
+            for j in range(0,7):
+                if (i+j)%2 ==0:
+                    point_coord = self.canvas.coords(self.board[i][j].id)
+                    if self.is_in_point(x,y,point_coord):
+                        print("OK")
+                        return True
+        return False
+
+
+    
+    def is_in_point(self,x,y,point_coord):
+        radius = (point_coord[2] - point_coord[0])//2
+        center = ((point_coord[2]+point_coord[0])//2,(point_coord[3]+point_coord[1])//2)
+        if x >= center[0]-radius and x <= center[0]+radius and y >=center[1]-radius and y<=center[1]-radius:
+            return True
+        return False
+
     
     
 class Point:
