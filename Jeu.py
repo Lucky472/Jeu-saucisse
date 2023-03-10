@@ -16,6 +16,7 @@ HEIGHT = 2*YMIN + 6*DIST
 WIDTHCANVAS = 800
 HEIGHTCANVAS = 800
 COLORCANVAS = "#000000"
+COLORPOINT = "#FFFFFF"
 
 
 
@@ -29,7 +30,7 @@ class GameShow:
         self.window = window
         self.plateau = Frame()
         self.menu = Frame()
-        self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height =HEIGHTCANVAS,bg=COLORCANVAS)
+        self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS)
         
         self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.activePlayer)
         #Pack l'interface graphique
@@ -44,9 +45,9 @@ class GameShow:
         #parcours la liste et quand il y a un point il le dessine 
         for i in range(0,9):
             for j in range(0,7):
-                if i+j %2 == 0:
-                    self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS)
-
+                if (i+j) %2 == 0:
+                  self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
+                  print(self.game_engine.board[i][j].id)
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
         self.game_engine.on_click(evt)
@@ -75,7 +76,8 @@ class GameEngine:
 
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
-        point =[]
+        point = [[0 for j in range(7)] for i in range(9)]
+
         for i in range(0,9):
             for j in range(0,7):
                 if (i+j)%2 == 0:
@@ -108,8 +110,8 @@ class GameEngine:
 class Point:
     def __init__(self):
         self.occupied = False
-        self.degree
-        self.id
+        self.degree = 0
+        self.id = 0
 
         #ADRIEN A L'IDEE, TABLEAU COORDONNES DE POINTS A DOUBLE ENTREE JE SAIS PLUS QUOI 
         pass
@@ -120,10 +122,6 @@ class Crossing:
         self.occupied = False
 
 
-
-
-
-        
 
 
 
