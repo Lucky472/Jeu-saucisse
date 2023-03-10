@@ -45,7 +45,7 @@ class GameShow:
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j) %2 == 0:
-                  self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
+                    self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
         self.game_engine.on_click(evt)
@@ -53,6 +53,7 @@ class GameShow:
             self.draw_sausage(self.game_engine.selected_dots)
             self.game_engine.selected_dots = []
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
+            #il faut aussi gérer la création de la saucisse côté cerveau
         pass
     
     def draw_sausage(self,points):
@@ -84,17 +85,32 @@ class GameEngine:
         self.update_dots_clickability()
 
     def update_dots_clickability(self):
-        for column in self.board :
-            for dot in column :
-                self.update_dot_clickability(dot)
+        for dot_x in range(0,X_AXIS_LENGTH):
+            for dot_y in range(0,Y_AXIS_LENGTH):
+                if (dot_x+dot_y)%2 == 0:
+                    self.update_dot_clickability((dot_x,dot_y))
     
-    def update_dot_clickability(self,dot):
+    def update_dot_clickability(self,dot_x,dot_y):
         """
-        teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement'
+        teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement
         """
-
+        if len(self.selected_dots) == 0:
+            return self.dot_next_to_degree_2(dot_x,dot_y)
         pass
 
+    def dot_next_to_degree_2(self,dot_x,dot_y):
+        #regarde les points adjacents et vérifie si au moins l'un d'eux est de degrès 2
+        for dot in self.accessible_neighbours(dot_x,dot_y):
+            if self.board[dot_x][dot_y].degree > 1 :
+                return True
+        return False
+        
+    def accessible_neighbours(self,dot_x,dot_y):
+        """
+        renvoie un tuple contenant les tuples de coordonnées des points accessibles depuis le point de coordonnées x,y
+        """
+        pass
+    
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
         point = [[0 for j in range(Y_AXIS_LENGTH)] for i in range(X_AXIS_LENGTH)]
