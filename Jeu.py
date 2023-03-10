@@ -7,18 +7,16 @@ Created on Tue Mar  7 08:08:32 2023
 """
 from tkinter import *
 
-RADIUS = 5
+RADIUS = 15
 XMIN = 20
 YMIN = 20
-DIST = 10
-WIDTH = 2*XMIN + 8*DIST
-HEIGHT = 2*YMIN + 6*DIST
-WIDTHCANVAS = 800
-HEIGHTCANVAS = 800
-COLORCANVAS = "#000000"
-COLORPOINT = "#FFFFFF"
 LENGTH_OF_THE_X_AXIS = 9
 LENGTH_OF_THE_Y_AXIS = 7
+DIST = 100
+WIDTHCANVAS = 2*XMIN + 8*DIST
+HEIGHTCANVAS = 2*YMIN + 6*DIST
+COLORCANVAS = "#EEEEEE"
+COLORPOINT = "#416FEC"
 
 class GameShow:
     def __init__(self,window):
@@ -47,7 +45,6 @@ class GameShow:
             for j in range(0,LENGTH_OF_THE_Y_AXIS):
                 if (i+j) %2 == 0:
                   self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
-                  print(self.game_engine.board[i][j].id)
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
         self.game_engine.on_click(evt)
