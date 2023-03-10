@@ -81,8 +81,15 @@ class GameEngine:
             self.selected_dots.append(dot)
         self.update_dots_clickability()
 
-    def update_dots_clickability():
-        
+    def update_dots_clickability(self):
+        for column in self.board :
+            for dot in column :
+                self.update_dot_clickability(dot)
+    
+    def update_dot_clickability(self,dot):
+        """
+        teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement'
+        """
         pass
 
     def set_new_board(self):
