@@ -95,9 +95,19 @@ class GameEngine:
         teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement
         """
         if len(self.selected_dots) == 0:
-            return self.dot_next_to_degree_2(dot_x,dot_y)
+            self.board[dot_x][dot_y].can_be_clicked = self.dot_next_to_degree_2(dot_x,dot_y)
+        else :
+            self.board[dot_x][dot_y].can_be_clicked = self.are_connectable(self.selected_dots[-1],(dot_x,dot_y))
         pass
 
+    def are_connectable(dot1_coords,dot2_coords):
+        """
+        renvoie un booléen
+        True si les deux points sont adjacents et si (si elle existe) l'intersection entre eux n'est pas occupée
+        False sinon
+        """
+        pass
+    
     def dot_next_to_degree_2(self,dot_x,dot_y):
         #regarde les points adjacents et vérifie si au moins l'un d'eux est de degrès 2
         for dot in self.accessible_neighbours(dot_x,dot_y):
@@ -108,6 +118,7 @@ class GameEngine:
     def accessible_neighbours(self,dot_x,dot_y):
         """
         renvoie un tuple contenant les tuples de coordonnées des points accessibles depuis le point de coordonnées x,y
+        (doit prendre en compte si le point est occupé ainsi que les intersections)
         """
         pass
     
@@ -149,8 +160,8 @@ class GameEngine:
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
                         print("OK")
-                        return True
-        return False
+                        return (i,j)
+        return None
 
 
     
