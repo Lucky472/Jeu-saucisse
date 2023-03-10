@@ -10,8 +10,8 @@ from tkinter import *
 RADIUS = 15
 XMIN = 20
 YMIN = 20
-LENGTH_OF_THE_X_AXIS = 9
-LENGTH_OF_THE_Y_AXIS = 7
+X_AXIS_LENGTH = 9
+Y_AXIS_LENGTH = 7
 DIST = 100
 WIDTHCANVAS = 2*XMIN + 8*DIST
 HEIGHTCANVAS = 2*YMIN + 6*DIST
@@ -41,8 +41,8 @@ class GameShow:
         
     def draw_board(self):
         #parcours la liste et quand il y a un point il le dessine 
-        for i in range(0,LENGTH_OF_THE_X_AXIS):
-            for j in range(0,LENGTH_OF_THE_Y_AXIS):
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
                 if (i+j) %2 == 0:
                   self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
     def on_click(self,evt):
@@ -87,10 +87,10 @@ class GameEngine:
 
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
-        point = [[0 for j in range(LENGTH_OF_THE_Y_AXIS)] for i in range(LENGTH_OF_THE_X_AXIS)]
+        point = [[0 for j in range(Y_AXIS_LENGTH)] for i in range(X_AXIS_LENGTH)]
 
-        for i in range(0,LENGTH_OF_THE_X_AXIS):
-            for j in range(0,LENGTH_OF_THE_Y_AXIS):
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
                 if (i+j)%2 == 0:
                     point[i][j] = Point()
                 else:
