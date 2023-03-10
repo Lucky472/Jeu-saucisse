@@ -127,8 +127,8 @@ class GameEngine:
         #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
         x = evt.x
         y = evt.y
-        for i in range(0,9):
-            for j in range(0,7):
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
                 if (i+j)%2 ==0:
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
@@ -139,8 +139,8 @@ class GameEngine:
 
     
     def is_in_point(self,x,y,point_coord):
-        radius = (point_coord[2] - point_coord[0])//2
-        center = ((point_coord[2]+point_coord[0])//2,(point_coord[3]+point_coord[1])//2)
+        radius = (point_coord[1] - point_coord[0])//2
+        center = ((point_coord[1]+point_coord[0])//2,(point_coord[3]+point_coord[1])//2)
         if x >= center[0]-radius and x <= center[0]+radius and y >=center[1]-radius and y<=center[1]-radius:
             return True
         return False
