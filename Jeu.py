@@ -29,7 +29,7 @@ class GameShow:
         self.menu = Frame()
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS)
         self.game_engine = GameEngine(self.canvas)
-        self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.activePlayer)
+        self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.active_player)
         self.canvas.bind("<Button-1>",self.on_click)
         #Pack l'interface graphique
         self.plateau.pack(expand=YES,side=LEFT)
@@ -101,7 +101,7 @@ class GameEngine:
             self.board[dot_x][dot_y].can_be_clicked = self.are_connectable(self.selected_dots[-1],(dot_x,dot_y))
         pass
 
-    def are_connectable(dot1_coords,dot2_coords):
+    def are_connectable(self,dot1_coords,dot2_coords):
         """
         renvoie un booléen
         True si les deux points sont adjacents et si (si elle existe) l'intersection entre eux n'est pas occupée
@@ -120,8 +120,9 @@ class GameEngine:
         """
         renvoie un tuple contenant les tuples de coordonnées des points accessibles depuis le point de coordonnées x,y
         (doit prendre en compte si le point est occupé ainsi que les intersections)
+        renvoie tuple vide si pas de points accessibles
         """
-        pass
+        return ()
     
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
@@ -163,6 +164,7 @@ class GameEngine:
                 if (i+j)%2 ==0:
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
+                        print(i,j)
                         return (i,j)
         return None
 
