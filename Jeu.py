@@ -46,6 +46,7 @@ class GameShow:
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j) %2 == 0:
                     self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
+    
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
         self.game_engine.on_click(evt)
@@ -57,7 +58,7 @@ class GameShow:
         pass
     
     def draw_sausage(self,points):
-        #dessine une saucisse étant donné un tuple de 3 points, vide la liste selected dots
+        #dessine une saucisse étant donné un tuple de 3 points
         pass
     
     def highlight_points(self):
@@ -80,9 +81,9 @@ class GameEngine:
         si le point cliqué peut être sélectionné : sélectionne le point
         """
         dot = self.check_coord_mouse(evt)
-        """if dot != None and dot not in self.selected_dots :
+        if dot != None and dot not in self.selected_dots :
             self.selected_dots.append(dot)
-        self.update_dots_clickability()"""
+        self.update_dots_clickability()
 
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
@@ -159,18 +160,15 @@ class GameEngine:
                 if (i+j)%2 ==0:
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
-                        print("OK")
                         return (i,j)
         return None
 
 
     
     def is_in_point(self,x,y,point_coord):
-        print("appellé")
         center_x = (point_coord[2] + point_coord[0])/2
         center_y = (point_coord[3] + point_coord[1])/2
         dist = sqrt((abs(x-center_x))**2 +(abs(y-center_y))**2)
-        print(dist,RADIUS)
         if dist <= RADIUS:
             return True
         return False
