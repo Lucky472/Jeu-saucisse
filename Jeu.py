@@ -57,7 +57,7 @@ class GameShow:
         pass
     
     def draw_sausage(self,points):
-        #dessine une saucisse étant donné un tuple de 3 points
+        #dessine une saucisse étant donné un tuple de 3 points, vide la liste selected dots
         pass
     
     def highlight_points(self):
@@ -80,15 +80,15 @@ class GameEngine:
         si le point cliqué peut être sélectionné : sélectionne le point
         """
         dot = self.check_coord_mouse(evt)
-        if dot != None and dot not in self.selected_dots :
+        """if dot != None and dot not in self.selected_dots :
             self.selected_dots.append(dot)
-        self.update_dots_clickability()
+        self.update_dots_clickability()"""
 
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
             for dot_y in range(0,Y_AXIS_LENGTH):
                 if (dot_x+dot_y)%2 == 0:
-                    self.update_dot_clickability((dot_x,dot_y))
+                    self.update_dot_clickability(dot_x,dot_y)
     
     def update_dot_clickability(self,dot_x,dot_y):
         """
@@ -166,9 +166,12 @@ class GameEngine:
 
     
     def is_in_point(self,x,y,point_coord):
-        radius = (point_coord[1] - point_coord[0])//2
-        center = ((point_coord[1]+point_coord[0])//2,(point_coord[3]+point_coord[1])//2)
-        if x >= center[0]-radius and x <= center[0]+radius and y >=center[1]-radius and y<=center[1]-radius:
+        print("appellé")
+        center_x = (point_coord[2] + point_coord[0])/2
+        center_y = (point_coord[3] + point_coord[1])/2
+        dist = sqrt((abs(x-center_x))**2 +(abs(y-center_y))**2)
+        print(dist,RADIUS)
+        if dist <= RADIUS:
             return True
         return False
 
