@@ -21,7 +21,6 @@ COLORPOINT = "#416FEC"
 
 class GameShow:
     def __init__(self,window):
-        #BIND LE CLIC 
 
 
         #Initialise l'interface graphique
@@ -73,7 +72,8 @@ class GameEngine:
     def __init__(self,canvas):
         self.canvas = canvas
         self.board = self.set_new_board()
-        self.activePlayer = "UI"
+        self.list_player = ["Joueur 1","Joueur 2"]
+        self.active_player = self.list_player[0]
         self.selected_dots = []
         
     def on_click(self,evt):
@@ -147,7 +147,10 @@ class GameEngine:
     
     def update_all_degree(self):
         #update degree pour chaque point 
-        pass
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
+                if (i+j)%2 == 0:
+                    self.update_degree(self.board[i][j])
     
 
 
@@ -172,6 +175,13 @@ class GameEngine:
         if dist <= RADIUS:
             return True
         return False
+    
+    def change_active_player(self):
+        if self.active_player == self.list_player[0]:
+            self.active_player = self.list_player[1]
+        else :
+            self.active_player = self.list_player[0]
+
 
     
     
