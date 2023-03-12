@@ -16,7 +16,7 @@ Y_AXIS_LENGTH = 7
 DIST = 50
 WIDTHCANVAS = 2*XMIN + 8*DIST
 HEIGHTCANVAS = 2*YMIN + 6*DIST
-HEIGHTMENU = WIDTHCANVAS//4
+HEIGHTMENU = WIDTHCANVAS//128
 COLORCANVAS = "#EEEEEE"
 COLORPOINT = "#416FEC"
 
@@ -31,12 +31,14 @@ class GameShow:
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
         self.label_active_player = Label(self.menu,textvariable= self.game_engine.active_player)
+        self.button_forfeit = Button(self.menu, text='Forfeit')
         self.canvas.bind("<Button-1>",self.on_click)
         
         #Pack l'interface graphique
         self.menu.pack(expand=YES,side=TOP)
         self.plateau.pack(expand=YES,side=BOTTOM)
         self.canvas.pack(expand=YES)
+        self.button_forfeit.pack()
         self.label_active_player.pack(expand=YES,side=TOP)
 
         self.draw_board()
