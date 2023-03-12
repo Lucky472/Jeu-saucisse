@@ -13,7 +13,7 @@ XMIN = 20
 YMIN = 20
 X_AXIS_LENGTH = 9
 Y_AXIS_LENGTH = 7
-DIST = 100
+DIST = 50
 WIDTHCANVAS = 2*XMIN + 8*DIST
 HEIGHTCANVAS = 2*YMIN + 6*DIST
 HEIGHTMENU = WIDTHCANVAS//4
@@ -27,17 +27,17 @@ class GameShow:
         #Initialise l'interface graphique
         self.window = window
         self.plateau = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTCANVAS)
-        self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU,bg="black")
+        self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
-        self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.active_player)
+        self.label_active_player = Label(self.menu,textvariable= self.game_engine.active_player)
         self.canvas.bind("<Button-1>",self.on_click)
         
         #Pack l'interface graphique
-        self.plateau.pack(expand=YES,side=BOTTOM)
         self.menu.pack(expand=YES,side=TOP)
+        self.plateau.pack(expand=YES,side=BOTTOM)
         self.canvas.pack(expand=YES)
-        self.labelActivePlayer.pack(expand=YES)
+        self.label_active_player.pack(expand=YES,side=TOP)
 
         self.draw_board()
         
@@ -54,7 +54,10 @@ class GameShow:
         if len(self.game_engine.selected_dots) == 3 :
             self.draw_sausage(self.game_engine.selected_dots)
             self.game_engine.selected_dots = []
+            #vérifie si la partie est finie
+            self.game_engine.game_over_test()
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
+            self.game_engine.change_active_player()
             #il faut aussi gérer la création de la saucisse côté cerveau
         pass
     
