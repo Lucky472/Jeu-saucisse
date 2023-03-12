@@ -16,6 +16,7 @@ Y_AXIS_LENGTH = 7
 DIST = 100
 WIDTHCANVAS = 2*XMIN + 8*DIST
 HEIGHTCANVAS = 2*YMIN + 6*DIST
+HEIGHTMENU = WIDTHCANVAS//4
 COLORCANVAS = "#EEEEEE"
 COLORPOINT = "#416FEC"
 
@@ -25,15 +26,16 @@ class GameShow:
 
         #Initialise l'interface graphique
         self.window = window
-        self.plateau = Frame()
-        self.menu = Frame()
-        self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS)
+        self.plateau = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTCANVAS)
+        self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU,bg="black")
+        self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
         self.labelActivePlayer = Label(self.menu,textvariable= self.game_engine.active_player)
         self.canvas.bind("<Button-1>",self.on_click)
+        
         #Pack l'interface graphique
-        self.plateau.pack(expand=YES,side=LEFT)
-        self.menu.pack(expand=YES,side=RIGHT)
+        self.plateau.pack(expand=YES,side=BOTTOM)
+        self.menu.pack(expand=YES,side=TOP)
         self.canvas.pack(expand=YES)
         self.labelActivePlayer.pack(expand=YES)
 
