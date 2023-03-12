@@ -58,6 +58,7 @@ class GameShow:
         self.game_engine.on_click(evt)
         if len(self.game_engine.selected_dots) == 3 :
             self.draw_sausage(self.game_engine.selected_dots)
+            self.change_color_point()
             self.game_engine.selected_dots = []
             #vérifie si la partie est finie
             self.game_engine.game_over_test()
@@ -73,18 +74,20 @@ class GameShow:
     def highlight_points(self,dot_x,dot_y):
         #met en surbrillance les points accessibles depuis un point sélectionné
         for dot in self.game_engine.accessible_neighbours(dot_x,dot_y):
-            self.color_point(dot,SHINY)
+            point = self.game_engine.board[dot[0]][dot[1]]
+            self.color_point(point,SHINY)
     
     def color_point(self,point,color):
         #change la couleur d'un point par la couleur donnée.
-        pass
+        self.canvas.itemconfig(point.id,fill = color)
     
     def change_color_point(self):
-        for i in self.game_engine.selected_dots:
+        for dot in self.game_engine.selected_dots:
+            point = self.game_engine.board[dot[0]][dot[1]]
             if self.game_engine.active_player == self.game_engine.list_player[0]:
-                self.color_point(i,COLORPLAYER1)
+                self.color_point(point,COLORPLAYER1)
             if self.game_engine.active_player == self.game_engine.list_player[1]:
-                self.color_point(i,COLORPLAYER2)            
+                self.color_point(point,COLORPLAYER2)            
     
     
     
