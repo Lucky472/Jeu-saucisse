@@ -19,6 +19,9 @@ HEIGHTCANVAS = 2*YMIN + 6*DIST
 HEIGHTMENU = WIDTHCANVAS//128
 COLORCANVAS = "#EEEEEE"
 COLORPOINT = "#416FEC"
+SHINY = "#fafa21"
+COLORPLAYER1 = "#008000"
+COLORPLAYER2 = "#ed1111"
 
 class GameShow:
     def __init__(self,window):
@@ -67,9 +70,21 @@ class GameShow:
         #dessine une saucisse étant donné un tuple de 3 points
         pass
     
-    def highlight_points(self):
+    def highlight_points(self,dot_x,dot_y):
         #met en surbrillance les points accessibles depuis un point sélectionné
+        for dot in self.game_engine.accessible_neighbours(dot_x,dot_y):
+            self.color_point(dot,SHINY)
+    
+    def color_point(self,point,color):
+        #change la couleur d'un point par la couleur donnée.
         pass
+    
+    def change_color_point(self):
+        for i in self.game_engine.selected_dots:
+            if self.game_engine.active_player == self.game_engine.list_player[0]:
+                self.color_point(i,COLORPLAYER1)
+            if self.game_engine.active_player == self.game_engine.list_player[1]:
+                self.color_point(i,COLORPLAYER2)            
     
     
     
