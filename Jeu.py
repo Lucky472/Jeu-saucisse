@@ -33,18 +33,29 @@ class GameShow:
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
-        self.label_active_player = Label(self.menu,textvariable= self.game_engine.active_player)
-        self.button_forfeit = Button(self.menu, text='Forfeit')
+        self.active_player = StringVar()
+        self.active_player.set(self.game_engine.list_player[0])
+        self.label_active_player = Label(self.menu,textvariable = self.active_player)
+        self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
         self.canvas.bind("<Button-1>",self.on_click)
         
         #Pack l'interface graphique
         self.menu.pack(expand=YES,side=TOP)
         self.plateau.pack(expand=YES,side=BOTTOM)
         self.canvas.pack(expand=YES)
-        self.button_forfeit.pack()
-        self.label_active_player.pack(expand=YES,side=TOP)
+        self.button_forfeit.pack(side=LEFT)
+        self.label_active_player.pack(expand=YES,side=RIGHT)
 
         self.draw_board()
+        
+    def forfeit_popup(self):
+        #J'suis pas sûr que la fonction aille au bout, c'est marqué sur la doc que le messagebox renvoie soit Yes soit No mais la fenêtre de jeu se ferme pas
+        #PS: c'est juste un test voir si la fonction marche, faudra faire une commande restart
+        self.forfeit_popup = messagebox.askyesno(title='Forfeit', message='Do you really want to forfeit?')
+        if self.forfeit_popup == 'Yes':
+            self.window.destroy()
+        if self.forfeit_popup == 'No':
+            pass
         
     def draw_board(self):
         #parcours la liste et quand il y a un point il le dessine 
@@ -69,6 +80,7 @@ class GameShow:
     
     def draw_sausage(self,points):
         #dessine une saucisse étant donné un tuple de 3 points
+        #Je m'en occupe Lundi, j'suis pété là
         pass
     
     def highlight_points(self,dot_x,dot_y):
@@ -89,8 +101,8 @@ class GameShow:
             if self.game_engine.active_player == self.game_engine.list_player[1]:
                 self.color_point(point,COLORPLAYER2)            
     
-    
-    
+    def reinit(self):
+        pass
 
 
 class GameEngine:
