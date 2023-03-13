@@ -71,13 +71,12 @@ class GameShow:
         if len(self.game_engine.selected_dots) == 3 :
             self.draw_sausage(self.game_engine.selected_dots)
             self.change_color_point()
-            self.game_engine.selected_dots = []
             #vérifie si la partie est finie
             if self.game_engine.game_over_test():
                 self.show_winner()
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
-            #il faut aussi gérer la création de la saucisse côté cerveau
+            self.game_engine.draw_sausage()
         pass
     
     def draw_sausage(self,dots):
@@ -146,11 +145,24 @@ class GameEngine:
         si le point cliqué peut être sélectionné : sélectionne le point
         """
         dot = self.check_coord_mouse(evt)
+        print("click")
+        print(dot)
+        print(self.board[dot[0]][dot[1]].can_be_clicked)
         if dot != None and dot not in self.selected_dots :
             if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
         self.update_dots_clickability()
-
+        print(self.selected_dots)
+    
+    def draw_sausage(self):
+        centre = self.selected_dots[1]
+        for dot in self.selected_dots:
+            self.board[dot[0]][dot[1]].occupied = True
+            self.board[(dot[0]+centre[0])//2][(dot[1]+centre[1])//2].occupied = True        
+        self.selected_dots = []
+        self.update_all_degree()
+        self.update_dots_clickability()
+        
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
             for dot_y in range(0,Y_AXIS_LENGTH):
@@ -161,11 +173,12 @@ class GameEngine:
         """
         teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement
         """
-        if len(self.selected_dots) == 0:
+        if self.board[dot_x][dot_y].occupied :
+            self.board[dot_x][dot_y].can_be_clicked = False
+        elif len(self.selected_dots) == 0:
             self.board[dot_x][dot_y].can_be_clicked = self.dot_next_to_degree_2(dot_x,dot_y)
         else :
             self.board[dot_x][dot_y].can_be_clicked = self.are_connectable(self.selected_dots[-1],(dot_x,dot_y))
-        pass
 
     def are_connectable(self,dot1_coords,dot2_coords):
         """
@@ -180,14 +193,16 @@ class GameEngine:
         dot2 = self.board[dot2_x][dot2_y]
         if abs(dot1_x - dot2_x) > 2 or abs(dot1_y - dot2_y) > 2 :
             return False
+        if abs(dot1_x - dot2_x) == 2 and abs(dot1_y - dot2_y) == 2 :
+            return False
         if dot2.occupied :
             return False
         if dot1_coords[0] != dot2_coords[0] and dot1_coords[1] != dot2_coords[1]:
             return True
         if dot1_x == dot2_x :
-            return self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
+            return not self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
         if dot1_y == dot2_y :
-            return self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
+            return not self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
         return False
 
     def dot_next_to_degree_2(self,dot_x,dot_y):
@@ -204,21 +219,21 @@ class GameEngine:
         """
         neighbours = []
         if dot_x + 2 < X_AXIS_LENGTH :
-            neighbours.append(dot_x + 2, dot_y)
+            neighbours.append((dot_x + 2, dot_y))
         if dot_y + 2 < Y_AXIS_LENGTH :
-            neighbours.append(dot_x, dot_y + 2)
+            neighbours.append((dot_x, dot_y + 2))
         if dot_x - 2 >= 0 :
-            neighbours.append(dot_x - 2, dot_y)
+            neighbours.append((dot_x - 2, dot_y))
         if dot_y - 2 >= 0 :
-            neighbours.append(dot_x, dot_y - 2)
+            neighbours.append((dot_x, dot_y - 2))
         if dot_x + 1 < X_AXIS_LENGTH and dot_y + 1 < Y_AXIS_LENGTH :
-            neighbours.append(dot_x + 1, dot_y + 1)
+            neighbours.append((dot_x + 1, dot_y + 1))
         if dot_x + 1 < X_AXIS_LENGTH and dot_y - 1 >= 0 :
-            neighbours.append(dot_x + 1, dot_y - 1)
+            neighbours.append((dot_x + 1, dot_y - 1))
         if dot_x - 1 >= 0 and dot_y + 1 < Y_AXIS_LENGTH :
-            neighbours.append(dot_x - 1, dot_y + 1)
+            neighbours.append((dot_x - 1, dot_y + 1))
         if dot_x - 1 >= 0 and dot_y - 1 >= 0 :
-            neighbours.append(dot_x + 2, dot_y + 2)
+            neighbours.append((dot_x - 1, dot_y - 1))
         return tuple(neighbours)
 
     def accessible_neighbours(self,dot_x,dot_y):
@@ -274,7 +289,6 @@ class GameEngine:
                 if (i+j)%2 ==0:
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
-                        print(i,j)
                         return (i,j)
         return None
 
