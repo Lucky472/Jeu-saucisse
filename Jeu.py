@@ -34,28 +34,36 @@ class GameShow:
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
-        self.active_player = StringVar()
+        self.label_text_next_to_active_player = Label(self.menu, text="Active player:", bg=self.active_player_color())
+        self.active_player = StringVar()    
         self.active_player.set(self.game_engine.active_player)
-        self.label_active_player = Label(self.menu,textvariable = self.active_player)
+        self.label_active_player = Label(self.menu,textvariable = self.active_player, bg=self.active_player_color())
         self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
+        self.button_undo = Button(self.menu, text='Undo', command=self.reset_sausage)
         self.canvas.bind("<Button-1>",self.on_click)
         
         #Pack l'interface graphique
         self.menu.pack(expand=YES,side=TOP)
         self.plateau.pack(expand=YES,side=BOTTOM)
         self.canvas.pack(expand=YES)
-        self.button_forfeit.pack(side=LEFT)
         self.label_active_player.pack(expand=YES,side=RIGHT)
+        self.label_text_next_to_active_player.pack(side=RIGHT)
+        self.button_forfeit.pack(side = LEFT)
+        self.button_undo.pack(side=LEFT, padx=WIDTHCANVAS//3)
 
         self.draw_board()
+
+    def active_player_color(self):
+        if self.game_engine.active_player == self.game_engine.list_player[0]:
+            return COLORPLAYER1
+        if self.game_engine.active_player == self.game_engine.list_player[1]:
+            return COLORPLAYER2
         
     def forfeit_popup(self):
-        #J'suis pas sûr que la fonction aille au bout, c'est marqué sur la doc que le messagebox renvoie soit Yes soit No mais la fenêtre de jeu se ferme pas
-        #PS: c'est juste un test voir si la fonction marche, faudra faire une commande restart
         self.forfeit_popup = messagebox.askyesno(title='Forfeit', message='Do you really want to forfeit?')
-        if self.forfeit_popup == 'Yes':
+        if self.forfeit_popup == YES:
             self.window.destroy()
-        if self.forfeit_popup == 'No':
+        if self.forfeit_popup == NO:
             pass
         
     def draw_board(self):
@@ -119,7 +127,7 @@ class GameShow:
     
     def reset_sausage(self):
         for dot in self.game_engine.selected_dots:
-            self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
+            self.color_point(self.game_engine.board[dot[0]][dot[1]].id,COLORPOINT)
             self.can_be_clicked = True
         self.game_engine.selected_dots = []
 
