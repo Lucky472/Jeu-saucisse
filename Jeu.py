@@ -23,11 +23,10 @@ SHINY = "#18D9E4"
 COLORPLAYER1 = "#40A040"
 COLORPLAYER2 = "#ed1111"
 SAUSAGEWIDTH = 20
+TEXTFONT = 30
 
 class GameShow:
     def __init__(self,window):
-
-
         #Initialise l'interface graphique
         self.window = window
         self.window.iconbitmap("IMAGE-SAUCISSE.ico")
@@ -35,14 +34,16 @@ class GameShow:
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
-        self.label_text_next_to_active_player = Label(self.menu, text="Active player:", bg=self.active_player_color())
+        self.label_text_next_to_active_player = Label(self.menu, text="Active player:", bg=self.active_player_color(),font = TEXTFONT)
         self.active_player = StringVar()    
         self.active_player.set(self.game_engine.active_player)
-        self.label_active_player = Label(self.menu,textvariable = self.active_player, bg=self.active_player_color())
+        self.label_active_player = Label(self.menu,textvariable = self.active_player, bg=self.active_player_color(),font = TEXTFONT)
         self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
         self.button_undo = Button(self.menu, text='Undo', command=self.reset_sausage)
         self.canvas.bind("<Button-1>",self.on_click)
+
         self.game_on = True
+
         #Pack l'interface graphique
         self.menu.pack(expand=YES,side=TOP)
         self.plateau.pack(expand=YES,side=BOTTOM)
@@ -63,7 +64,9 @@ class GameShow:
     def forfeit_popup(self):
         self.forfeit_popup = messagebox.askyesno(title='Forfeit', message='Do you really want to forfeit?')
         if self.forfeit_popup == YES:
-            self.window.destroy()
+            self.show_winner()
+            self.canvas.after(3000,self.window.destroy)
+
         if self.forfeit_popup == NO:
             pass
         
@@ -75,7 +78,9 @@ class GameShow:
                     self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
     
     def on_click(self,evt):
-        #gère si le click est sur un point et appelle les fonctions associées
+        """
+            S'occupe de tous les évéènements à appeller lors d'un clic
+        """
         if self.game_on:
             self.game_engine.on_click(evt)
             if len(self.game_engine.selected_dots) == 3 :
@@ -96,7 +101,9 @@ class GameShow:
                 self.color_point(self.game_engine.board[dot_x][dot_y],self.active_player_color())
     
     def draw_sausage(self,dots):
-        #dessine une saucisse étant donné un tuple de 3 points
+        """
+            Dessine la saucisse étant donné un tuple avec les coordonnés dans le tableau de 3 points
+        """
         point1 = self.game_engine.canvas.coords(self.game_engine.board[dots[0][0]][dots[0][1]].id)
         point2 = self.game_engine.canvas.coords(self.game_engine.board[dots[1][0]][dots[1][1]].id)
         point3 = self.game_engine.canvas.coords(self.game_engine.board[dots[2][0]][dots[2][1]].id)
@@ -106,7 +113,7 @@ class GameShow:
         else : 
             alpha = COLORPLAYER2 
 
-        if len (self.game_engine.selected_dots) ==3: 
+        if len(self.game_engine.selected_dots) ==3: 
             center1 = ((point1[2] + point1[0])/2,(point1[3] + point1[1])/2)
             center2 = ((point2[2] + point2[0])/2,(point2[3] + point2[1])/2)
             center3 = ((point3[2] + point3[0])/2,(point3[3] + point3[1])/2)
@@ -115,7 +122,9 @@ class GameShow:
             self.canvas.create_line(center2[0],center2[1],center3[0],center3[1], fill= alpha, width=SAUSAGEWIDTH )
     
     def highlight_points(self):
-        #met en surbrillance les point accessibles
+        """
+            Met en surbrillance les points pouvant être cliqués
+        """
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j)%2 == 0 :
@@ -132,6 +141,9 @@ class GameShow:
         self.canvas.itemconfig(point.id,fill = color)
     
     def change_color_point(self):
+        """
+            change la couleur des points selctionnées en fonction du joueur"
+        """
         for dot in self.game_engine.selected_dots:
             point = self.game_engine.board[dot[0]][dot[1]]
             if self.game_engine.active_player == self.game_engine.list_player[0]:
@@ -140,18 +152,16 @@ class GameShow:
                 self.color_point(point,COLORPLAYER2)            
     
     def reset_sausage(self):
+        """
+            fonction pour annuler une saucisse en cours de fabrication
+        """
         for dot in self.game_engine.selected_dots:
             self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
         self.game_engine.reset_sausage()
         self.highlight_points()
 
-    def reset_game(self):
-        self.game_engine.reset()
-        self.canvas.delete("sausage")
-        #lors de la création de la saucisse, ajouter l'attribut tag ="saucisse"
-    
     def show_winner(self):
-        self.canvas.create_text(WIDTHCANVAS//2,HEIGHTCANVAS//2,text="Victoire du "+str(self.active_player.get()),fill= "black",font=20)
+        self.canvas.create_text(WIDTHCANVAS//2,HEIGHTCANVAS//2,text="Victoire du "+str(self.active_player.get()),fill= "black",font=TEXTFONT,)
 
 
 class GameEngine:
@@ -164,7 +174,7 @@ class GameEngine:
         
     def on_click(self,evt):
         """
-        si le point cliqué peut être sélectionné : sélectionne le point
+        si le point cliqué peut être sélectionné : sélectionne le point et le met dans selected dots
         """
         dot = self.check_coord_mouse(evt)
         if dot != None and dot not in self.selected_dots :
@@ -177,6 +187,9 @@ class GameEngine:
         self.update_dots_clickability()
         
     def draw_sausage(self):
+        """
+            vérifie si la saucisse peut être dessinée et actualise les status des points
+        """
         for dot in self.selected_dots:
             self.board[dot[0]][dot[1]].occupied = True
         if self.selected_dots[0][0] == self.selected_dots[1][0] :
@@ -199,7 +212,7 @@ class GameEngine:
     
     def update_dot_clickability(self,dot_x,dot_y):
         """
-        teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement
+        teste si le point peut être séléctionné pour une saucisse et modifie l'attribut is_clickable correctement
         """
         if self.board[dot_x][dot_y].occupied :
             self.board[dot_x][dot_y].can_be_clicked = False
@@ -311,7 +324,9 @@ class GameEngine:
                     self.update_degree(i,j)
     
     def check_coord_mouse(self,evt):
-        #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
+        """
+            vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
+        """
         x = evt.x
         y = evt.y
         for i in range(0,X_AXIS_LENGTH):
@@ -323,6 +338,10 @@ class GameEngine:
         return None
 
     def is_in_point(self,x,y,point_coord):
+        """
+            Calcule la norme euclidienne entre le centre du cercle et le point donné.
+            Renvoie un booléen indiquant si le point est dans le ercle ou non
+        """
         center_x = (point_coord[2] + point_coord[0])/2
         center_y = (point_coord[3] + point_coord[1])/2
         dist = sqrt((abs(x-center_x))**2 +(abs(y-center_y))**2)
@@ -336,14 +355,6 @@ class GameEngine:
         else :
             self.active_player = self.list_player[0]
 
-    def reset(self):
-
-        self.active_player = self.list_player[0]
-        self.selected_dots = []
-        for i in range(0,X_AXIS_LENGTH):
-            for j in range(0,Y_AXIS_LENGTH):
-                self.board[i][j].reset()
-
 
 class Point:
     def __init__(self):
@@ -352,20 +363,11 @@ class Point:
         self.id = 0
         self.can_be_clicked = True
 
-        #ADRIEN A L'IDEE, TABLEAU COORDONNES DE POINTS A DOUBLE ENTREE JE SAIS PLUS QUOI 
-        def reset(self):
-            self.occupied = False
-            self.degree = 0
-            self.can_be_clicked = True
-    
 
 class Crossing:
     def __init__(self):
         self.occupied = False
-    
-    def reset(self):
-        self.occupied = False
-        
+
 
     
     
