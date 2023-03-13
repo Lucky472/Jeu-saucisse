@@ -64,6 +64,10 @@ class GameShow:
     def forfeit_popup(self):
         self.forfeit_popup = messagebox.askyesno(title='Forfeit', message='Do you really want to forfeit?')
         if self.forfeit_popup == YES:
+            self.game_engine.change_active_player()
+            self.active_player.set(self.game_engine.active_player)
+            self.label_text_next_to_active_player["bg"]=self.active_player_color()
+            self.label_active_player["bg"]=self.active_player_color()
             self.show_winner()
             self.canvas.after(3000,self.window.destroy)
 
