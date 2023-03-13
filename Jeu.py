@@ -101,8 +101,10 @@ class GameShow:
             if self.game_engine.active_player == self.game_engine.list_player[1]:
                 self.color_point(point,COLORPLAYER2)            
     
-    def reinit(self):
-        pass
+    def reset_game(self):
+        self.game_engine.reset()
+        self.canvas.delete("sausage")
+        #lors de la création de la saucisse, ajouter l'attribut tag ="saucisse"
 
 
 class GameEngine:
@@ -221,7 +223,13 @@ class GameEngine:
         else :
             self.active_player = self.list_player[0]
 
+    def reset(self):
 
+        self.active_player = self.list_player[0]
+        self.selected_dots = []
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
+                self.board[i][j].reset()
     
     
 class Point:
@@ -232,11 +240,17 @@ class Point:
         self.can_be_clicked = True
 
         #ADRIEN A L'IDEE, TABLEAU COORDONNES DE POINTS A DOUBLE ENTREE JE SAIS PLUS QUOI 
-        pass
+        def reset(self):
+            self.occupied = False
+            self.degree = 0
+            self.can_be_clicked = True
     
 
 class Crossing:
     def __init__(self):
+        self.occupied = False
+    
+    def reset(self):
         self.occupied = False
 
 
