@@ -133,10 +133,8 @@ class GameShow:
     def reset_sausage(self):
         for dot in self.game_engine.selected_dots:
             self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
-            self.can_be_clicked = True
-        self.game_engine.selected_dots = []
+        self.game_engine.reset_sausage()
         self.highlight_points()
-        print(self.game_engine.board[dot[0]][dot[1]].can_be_clicked)
 
     def reset_game(self):
         self.game_engine.reset()
@@ -168,6 +166,10 @@ class GameEngine:
                 self.selected_dots.append(dot)
         self.update_dots_clickability()
     
+    def reset_sausage(self):
+        self.selected_dots = []
+        self.update_dots_clickability()
+        
     def draw_sausage(self):
         centre = self.selected_dots[1]
         for dot in self.selected_dots:
@@ -226,7 +228,7 @@ class GameEngine:
     def dot_next_to_degree_2(self,dot_x,dot_y):
         #regarde les points adjacents et vérifie si au moins l'un d'eux est de degrès 2
         for dot in self.accessible_neighbours(dot_x,dot_y):
-            if self.board[dot_x][dot_y].degree > 1 :
+            if self.board[dot[0]][dot[1]].degree > 1 :
                 return True
         return False
 
