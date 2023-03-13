@@ -61,8 +61,6 @@ class GameShow:
             return COLORPLAYER2
         
     def forfeit_popup(self):
-        #J'suis pas sûr que la fonction aille au bout, c'est marqué sur la doc que le messagebox renvoie soit Yes soit No mais la fenêtre de jeu se ferme pas
-        #PS: c'est juste un test voir si la fonction marche, faudra faire une commande restart
         self.forfeit_popup = messagebox.askyesno(title='Forfeit', message='Do you really want to forfeit?')
         if self.forfeit_popup == YES:
             self.window.destroy()
