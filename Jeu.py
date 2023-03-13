@@ -85,7 +85,7 @@ class GameShow:
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
             self.game_engine.draw_sausage()
-        pass
+        self.highlight_points()
     
     def draw_sausage(self,dots):
         #dessine une saucisse étant donné un tuple de 3 points
@@ -107,11 +107,16 @@ class GameShow:
             self.canvas.create_line(center1[0],center1[1],center2[0],center2[1], fill= alpha, width=SAUSAGEWIDTH )
             self.canvas.create_line(center2[0],center2[1],center3[0],center3[1], fill= alpha, width=SAUSAGEWIDTH )
     
-    def highlight_points(self,dot_x,dot_y):
-        #met en surbrillance les points accessibles depuis un point sélectionné
-        for dot in self.game_engine.accessible_neighbours(dot_x,dot_y):
-            point = self.game_engine.board[dot[0]][dot[1]]
-            self.color_point(point,SHINY)
+    def highlight_points(self):
+        #met en surbrillance les point accessibles
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
+                if (i+j)%2 == 0 :
+                    point = self.game_engine.board[i][j]
+                    if point.can_be_clicked :
+                        self.color_point(point,SHINY)
+                    elif not point.occupied :
+                        self.color_point(point,COLORPOINT)
     
     def color_point(self,point,color):
         #change la couleur d'un point par la couleur donnée.
@@ -127,9 +132,11 @@ class GameShow:
     
     def reset_sausage(self):
         for dot in self.game_engine.selected_dots:
-            self.color_point(self.game_engine.board[dot[0]][dot[1]].id,COLORPOINT)
+            self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
             self.can_be_clicked = True
         self.game_engine.selected_dots = []
+        self.highlight_points()
+        print(self.game_engine.board[dot[0]][dot[1]].can_be_clicked)
 
     def reset_game(self):
         self.game_engine.reset()
@@ -160,13 +167,14 @@ class GameEngine:
             if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
         self.update_dots_clickability()
-        print(self.selected_dots)
     
     def draw_sausage(self):
         centre = self.selected_dots[1]
         for dot in self.selected_dots:
             self.board[dot[0]][dot[1]].occupied = True
-            self.board[(dot[0]+centre[0])//2][(dot[1]+centre[1])//2].occupied = True        
+            self.board[(dot[0]+centre[0])//2][(dot[1]+centre[1])//2].occupied = True
+            print("magienoire")
+            print(((dot[0]+centre[0])//2, (dot[1]+centre[1])//2))
         self.selected_dots = []
         self.update_all_degree()
         self.update_dots_clickability()
@@ -182,6 +190,8 @@ class GameEngine:
         teste si le point peut être séléctionné pour une saucisse et modifie l'atribut correctement
         """
         if self.board[dot_x][dot_y].occupied :
+            self.board[dot_x][dot_y].can_be_clicked = False
+        elif (dot_x,dot_y) in self.selected_dots:
             self.board[dot_x][dot_y].can_be_clicked = False
         elif len(self.selected_dots) == 0:
             self.board[dot_x][dot_y].can_be_clicked = self.dot_next_to_degree_2(dot_x,dot_y)
