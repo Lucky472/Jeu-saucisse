@@ -34,7 +34,7 @@ class GameShow:
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
         self.active_player = StringVar()
-        self.active_player.set(self.game_engine.list_player[0])
+        self.active_player.set(self.game_engine.active_player)
         self.label_active_player = Label(self.menu,textvariable = self.active_player)
         self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
         self.canvas.bind("<Button-1>",self.on_click)
@@ -105,6 +105,8 @@ class GameShow:
     def reset_sausage(self):
         for dot in self.game_engine.selected_dots:
             self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
+            self.can_be_clicked = True
+        self.game_engine.selected_dots = []
 
     def reset_game(self):
         self.game_engine.reset()
@@ -131,7 +133,7 @@ class GameEngine:
         if dot != None and dot not in self.selected_dots :
             if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
-        self.update_dots_clickability()
+        #self.update_dots_clickability()
 
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
