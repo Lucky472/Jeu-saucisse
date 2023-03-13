@@ -133,7 +133,7 @@ class GameEngine:
         if dot != None and dot not in self.selected_dots :
             if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
-        #self.update_dots_clickability()
+        self.update_dots_clickability()
 
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
@@ -182,7 +182,28 @@ class GameEngine:
         return False
 
     def neighbours(self,dot_x,dot_y):
-        pass
+        """
+        renvoie un tuple contenant tous les points existants et étant proches du point en parametre
+        pour ce faire teste chaque point proche
+        """
+        neighbours = []
+        if dot_x + 2 < X_AXIS_LENGTH :
+            neighbours.append(dot_x + 2, dot_y)
+        if dot_y + 2 < Y_AXIS_LENGTH :
+            neighbours.append(dot_x, dot_y + 2)
+        if dot_x - 2 >= 0 :
+            neighbours.append(dot_x - 2, dot_y)
+        if dot_y - 2 >= 0 :
+            neighbours.append(dot_x, dot_y - 2)
+        if dot_x + 1 < X_AXIS_LENGTH and dot_y + 1 < Y_AXIS_LENGTH :
+            neighbours.append(dot_x + 1, dot_y + 1)
+        if dot_x + 1 < X_AXIS_LENGTH and dot_y - 1 >= 0 :
+            neighbours.append(dot_x + 1, dot_y - 1)
+        if dot_x - 1 >= 0 and dot_y + 1 < Y_AXIS_LENGTH :
+            neighbours.append(dot_x - 1, dot_y + 1)
+        if dot_x - 1 >= 0 and dot_y - 1 >= 0 :
+            neighbours.append(dot_x + 2, dot_y + 2)
+        return tuple(neighbours)
 
     def accessible_neighbours(self,dot_x,dot_y):
         """
@@ -210,18 +231,23 @@ class GameEngine:
 
     def game_over_test(self):
         #teste si des coups sont encore possibles sur le plateau
-        pass
+        for i in range(0,X_AXIS_LENGTH):
+            for j in range(0,Y_AXIS_LENGTH):
+                if (i+j)%2 == 0 :
+                    if self.board[i][j].degree > 1 :
+                        return False
+        return True
     
-    def update_degree(self,point):
+    def update_degree(self,dot_x,dot_y):
         #calcule le degré ( points libres atteignables) autour du point
-        pass
+        self.board[dot_x][dot_y].degree = len(self.accessible_neighbours(dot_x, dot_y))
     
     def update_all_degree(self):
         #update degree pour chaque point 
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j)%2 == 0:
-                    self.update_degree(self.board[i][j])
+                    self.update_degree(i,j)
     
     def check_coord_mouse(self,evt):
         #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
