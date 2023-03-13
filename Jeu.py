@@ -34,11 +34,10 @@ class GameShow:
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
         self.game_engine = GameEngine(self.canvas)
-        self.label_text_next_to_active_player = Label(self.menu, text="Active player:", bg=COLORPLAYER2)
-        #Ajouter le changement de couleur suiant le joueur actif j'arrive pas :(
+        self.label_text_next_to_active_player = Label(self.menu, text="Active player:", bg=self.active_player_color())
         self.active_player = StringVar()    
         self.active_player.set(self.game_engine.active_player)
-        self.label_active_player = Label(self.menu,textvariable = self.active_player, bg=COLORPLAYER2)
+        self.label_active_player = Label(self.menu,textvariable = self.active_player, bg=self.active_player_color())
         self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
         self.button_undo = Button(self.menu, text='Undo', command=self.reset_sausage)
         self.canvas.bind("<Button-1>",self.on_click)
@@ -53,11 +52,11 @@ class GameShow:
         self.button_undo.pack(side=LEFT, padx=WIDTHCANVAS//3)
 
         self.draw_board()
-      
+
     def active_player_color(self):
-        if self.active_player == self.game_engine.list_player[0]:
-            self.label_text_next_to_active_player.itemconfig(bg=COLORPLAYER1)
-        elif self.active_player == self.game_engine.list_player[1]:
+        if self.game_engine.active_player == self.game_engine.list_player[0]:
+            return COLORPLAYER1
+        if self.game_engine.active_player == self.game_engine.list_player[1]:
             return COLORPLAYER2
         
     def forfeit_popup(self):
