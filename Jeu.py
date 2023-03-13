@@ -84,6 +84,9 @@ class GameShow:
                 self.show_winner()
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
+            self.active_player.set(self.game_engine.active_player)
+            self.label_text_next_to_active_player["bg"]=self.active_player_color()
+            self.label_active_player["bg"]=self.active_player_color()
             self.game_engine.draw_sausage()
         pass
     
@@ -343,11 +346,10 @@ class Crossing:
     
     def reset(self):
         self.occupied = False
+        
 
-
-
-
-
+    
+    
 root = Tk()
 root.title("SaucisseTheGame")
 game = GameShow(root)
