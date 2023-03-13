@@ -80,8 +80,11 @@ class GameShow:
             self.draw_sausage(self.game_engine.selected_dots)
             self.change_color_point()
             #vérifie si la partie est finie
+            self.game_engine.update_all_degree()
+            print("lol")
             if self.game_engine.game_over_test():
                 self.show_winner()
+                print("lol")
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
             self.game_engine.draw_sausage()
@@ -103,7 +106,6 @@ class GameShow:
             center2 = ((point2[2] + point2[0])/2,(point2[3] + point2[1])/2)
             center3 = ((point3[2] + point3[0])/2,(point3[3] + point3[1])/2)
 
-            print(alpha)
             self.canvas.create_line(center1[0],center1[1],center2[0],center2[1], fill= alpha, width=SAUSAGEWIDTH )
             self.canvas.create_line(center2[0],center2[1],center3[0],center3[1], fill= alpha, width=SAUSAGEWIDTH )
     
@@ -158,9 +160,6 @@ class GameEngine:
         si le point cliqué peut être sélectionné : sélectionne le point
         """
         dot = self.check_coord_mouse(evt)
-        print("click")
-        print(dot)
-        print(self.board[dot[0]][dot[1]].can_be_clicked)
         if dot != None and dot not in self.selected_dots :
             if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
@@ -171,12 +170,16 @@ class GameEngine:
         self.update_dots_clickability()
         
     def draw_sausage(self):
-        centre = self.selected_dots[1]
         for dot in self.selected_dots:
             self.board[dot[0]][dot[1]].occupied = True
-            self.board[(dot[0]+centre[0])//2][(dot[1]+centre[1])//2].occupied = True
-            print("magienoire")
-            print(((dot[0]+centre[0])//2, (dot[1]+centre[1])//2))
+        if self.selected_dots[0][0] == self.selected_dots[1][0] :
+            self.board[self.selected_dots[0][0]][(self.selected_dots[0][1]+self.selected_dots[1][1])//2].occupied = True
+        if self.selected_dots[0][1] == self.selected_dots[1][1] :
+            self.board[(self.selected_dots[0][0]+self.selected_dots[1][0])//2][self.selected_dots[0][1]].occupied = True
+        if self.selected_dots[2][0] == self.selected_dots[1][0] :
+            self.board[self.selected_dots[2][0]][(self.selected_dots[2][1]+self.selected_dots[1][1])//2].occupied = True
+        if self.selected_dots[2][1] == self.selected_dots[1][1] :
+            self.board[(self.selected_dots[2][0]+self.selected_dots[1][0])//2][self.selected_dots[2][1]].occupied = True
         self.selected_dots = []
         self.update_all_degree()
         self.update_dots_clickability()
@@ -222,7 +225,7 @@ class GameEngine:
         if dot1_x == dot2_x :
             return not self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
         if dot1_y == dot2_y :
-            return not self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
+            return not self.board[(dot1_x+dot2_x)//2][dot1_y].occupied
         return False
 
     def dot_next_to_degree_2(self,dot_x,dot_y):
