@@ -156,6 +156,8 @@ class GameEngine:
         renvoie un booléen
         True si les deux points sont adjacents et si (si elle existe) l'intersection entre eux n'est pas occupée
         False sinon
+        le premier point peut être occupé
+        si le second est occupé, renvoie false
         """
         dot1_x,dot1_y = dot1_coords
         dot2_x,dot2_y = dot2_coords
@@ -179,15 +181,20 @@ class GameEngine:
                 return True
         return False
 
+    def neighbours(self,dot_x,dot_y):
+        pass
+
     def accessible_neighbours(self,dot_x,dot_y):
         """
         renvoie un tuple contenant les tuples de coordonnées des points accessibles depuis le point de coordonnées x,y
         (doit prendre en compte si le point est occupé ainsi que les intersections)
         renvoie tuple vide si pas de points accessibles
         """
-        
-        
-        return ()
+        accessible = []
+        for other_dot in self.neighbours(dot_x,dot_y):
+            if self.are_connectable((dot_x,dot_y),other_dot):
+                accessible.append(other_dot)
+        return tuple(accessible)
 
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
