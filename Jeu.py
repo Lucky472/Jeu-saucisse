@@ -14,15 +14,15 @@ YMIN = 20
 X_AXIS_LENGTH = 9
 Y_AXIS_LENGTH = 7
 DIST = 50
-WIDTHCANVAS = 2*XMIN + 8*DIST
-HEIGHTCANVAS = 2*YMIN + 6*DIST
+WIDTHCANVAS = 2*XMIN + (X_AXIS_LENGTH-1)*DIST
+HEIGHTCANVAS = 2*YMIN + (Y_AXIS_LENGTH-1)*DIST
 HEIGHTMENU = WIDTHCANVAS//128
 COLORCANVAS = "#EEEEEE"
 COLORPOINT = "#416FEC"
-SHINY = "#fafa21"
-COLORPLAYER1 = "#008000"
+SHINY = "#18D9E4"
+COLORPLAYER1 = "#40A040"
 COLORPLAYER2 = "#ed1111"
-SAUSAGEWIDTH = 10
+SAUSAGEWIDTH = 20
 
 class GameShow:
     def __init__(self,window):
@@ -30,6 +30,7 @@ class GameShow:
 
         #Initialise l'interface graphique
         self.window = window
+        self.window.iconbitmap("IMAGE-SAUCISSE.ico")
         self.plateau = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTCANVAS)
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
@@ -41,7 +42,7 @@ class GameShow:
         self.button_forfeit = Button(self.menu, text='Forfeit', command = self.forfeit_popup)
         self.button_undo = Button(self.menu, text='Undo', command=self.reset_sausage)
         self.canvas.bind("<Button-1>",self.on_click)
-        
+        self.game_on = True
         #Pack l'interface graphique
         self.menu.pack(expand=YES,side=TOP)
         self.plateau.pack(expand=YES,side=BOTTOM)
@@ -75,22 +76,24 @@ class GameShow:
     
     def on_click(self,evt):
         #gère si le click est sur un point et appelle les fonctions associées
-        self.game_engine.on_click(evt)
-        if len(self.game_engine.selected_dots) == 3 :
-            self.draw_sausage(self.game_engine.selected_dots)
-            self.change_color_point()
-            self.game_engine.draw_sausage()
-            #vérifie si la partie est finie
-            if self.game_engine.game_over_test():
-                self.show_winner()
-            self.game_engine.change_active_player()
-            self.active_player.set(self.game_engine.active_player)
-            self.label_text_next_to_active_player["bg"]=self.active_player_color()
-            self.label_active_player["bg"]=self.active_player_color()
-        self.highlight_points()
-        if len(self.game_engine.selected_dots) != 0 :
-            dot_x, dot_y = self.game_engine.selected_dots[-1]
-            self.color_point(self.game_engine.board[dot_x][dot_y],self.active_player_color())
+        if self.game_on:
+            self.game_engine.on_click(evt)
+            if len(self.game_engine.selected_dots) == 3 :
+                self.draw_sausage(self.game_engine.selected_dots)
+                self.change_color_point()
+                self.game_engine.draw_sausage()
+                #vérifie si la partie est finie
+                if self.game_engine.game_over_test():
+                    self.show_winner()
+                    self.game_on = False
+                self.game_engine.change_active_player()
+                self.active_player.set(self.game_engine.active_player)
+                self.label_text_next_to_active_player["bg"]=self.active_player_color()
+                self.label_active_player["bg"]=self.active_player_color()
+            self.highlight_points()
+            if len(self.game_engine.selected_dots) != 0 :
+                dot_x, dot_y = self.game_engine.selected_dots[-1]
+                self.color_point(self.game_engine.board[dot_x][dot_y],self.active_player_color())
     
     def draw_sausage(self,dots):
         #dessine une saucisse étant donné un tuple de 3 points
