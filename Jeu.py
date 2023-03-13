@@ -72,7 +72,8 @@ class GameShow:
             self.change_color_point()
             self.game_engine.selected_dots = []
             #vérifie si la partie est finie
-            self.game_engine.game_over_test()
+            if self.game_engine.game_over_test():
+                self.show_winner()
             #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
             #il faut aussi gérer la création de la saucisse côté cerveau
@@ -104,11 +105,14 @@ class GameShow:
     def reset_sausage(self):
         for dot in self.game_engine.selected_dots:
             self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
-            
+
     def reset_game(self):
         self.game_engine.reset()
         self.canvas.delete("sausage")
         #lors de la création de la saucisse, ajouter l'attribut tag ="saucisse"
+    
+    def show_winner(self):
+        self.canvas.create_text(WIDTHCANVAS//2,HEIGHTCANVAS//2,text="Victoire du "+str(self.active_player.get()),fill= "black",font=20)
 
 
 class GameEngine:
@@ -125,7 +129,7 @@ class GameEngine:
         """
         dot = self.check_coord_mouse(evt)
         if dot != None and dot not in self.selected_dots :
-            if self.board[dot[0]][dot[1]].can_be_clicked:
+            if self.board[dot[0]][dot[1]].can_be_clicked ==True:
                 self.selected_dots.append(dot)
         self.update_dots_clickability()
 
