@@ -155,23 +155,38 @@ class GameEngine:
         True si les deux points sont adjacents et si (si elle existe) l'intersection entre eux n'est pas occupée
         False sinon
         """
-        pass
-    
+        dot1_x,dot1_y = dot1_coords
+        dot2_x,dot2_y = dot2_coords
+        dot2 = self.board[dot2_x][dot2_y]
+        if abs(dot1_x - dot2_x) > 2 or abs(dot1_y - dot2_y) > 2 :
+            return False
+        if dot2.occupied :
+            return False
+        if dot1_coords[0] != dot2_coords[0] and dot1_coords[1] != dot2_coords[1]:
+            return True
+        if dot1_x == dot2_x :
+            return self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
+        if dot1_y == dot2_y :
+            return self.board[dot1_x][(dot1_y+dot2_y)//2].occupied
+        return False
+
     def dot_next_to_degree_2(self,dot_x,dot_y):
         #regarde les points adjacents et vérifie si au moins l'un d'eux est de degrès 2
         for dot in self.accessible_neighbours(dot_x,dot_y):
             if self.board[dot_x][dot_y].degree > 1 :
                 return True
         return False
-        
+
     def accessible_neighbours(self,dot_x,dot_y):
         """
         renvoie un tuple contenant les tuples de coordonnées des points accessibles depuis le point de coordonnées x,y
         (doit prendre en compte si le point est occupé ainsi que les intersections)
         renvoie tuple vide si pas de points accessibles
         """
+        
+        
         return ()
-    
+
     def set_new_board(self):
         #Créer le tableau 2D avec des points en i+j pair et crossing sinon, renvoie ce tabelau
         point = [[0 for j in range(Y_AXIS_LENGTH)] for i in range(X_AXIS_LENGTH)]
@@ -184,8 +199,6 @@ class GameEngine:
                     point[i][j] = Crossing()
         return point
 
-
-    
     def game_over_test(self):
         #teste si des coups sont encore possibles sur le plateau
         pass
@@ -201,8 +214,6 @@ class GameEngine:
                 if (i+j)%2 == 0:
                     self.update_degree(self.board[i][j])
     
-
-
     def check_coord_mouse(self,evt):
         #vérifie si la souris clique sur un point et renvoie les coords du point si oui et None sinon
         x = evt.x
@@ -216,8 +227,6 @@ class GameEngine:
                         return (i,j)
         return None
 
-
-    
     def is_in_point(self,x,y,point_coord):
         center_x = (point_coord[2] + point_coord[0])/2
         center_y = (point_coord[3] + point_coord[1])/2
@@ -239,8 +248,8 @@ class GameEngine:
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
                 self.board[i][j].reset()
-    
-    
+
+
 class Point:
     def __init__(self):
         self.occupied = False
