@@ -79,19 +79,18 @@ class GameShow:
         if len(self.game_engine.selected_dots) == 3 :
             self.draw_sausage(self.game_engine.selected_dots)
             self.change_color_point()
+            self.game_engine.draw_sausage()
             #vérifie si la partie est finie
-            self.game_engine.update_all_degree()
-            print("lol")
             if self.game_engine.game_over_test():
                 self.show_winner()
-                print("lol")
-            #il faut gérer ici le passage à l'autre joueur (ou appeller une founction de game_engine qui s'en charge)
             self.game_engine.change_active_player()
             self.active_player.set(self.game_engine.active_player)
             self.label_text_next_to_active_player["bg"]=self.active_player_color()
             self.label_active_player["bg"]=self.active_player_color()
-            self.game_engine.draw_sausage()
         self.highlight_points()
+        if len(self.game_engine.selected_dots) != 0 :
+            dot_x, dot_y = self.game_engine.selected_dots[-1]
+            self.color_point(self.game_engine.board[dot_x][dot_y],self.active_player_color())
     
     def draw_sausage(self,dots):
         #dessine une saucisse étant donné un tuple de 3 points
@@ -120,6 +119,8 @@ class GameShow:
                     point = self.game_engine.board[i][j]
                     if point.can_be_clicked :
                         self.color_point(point,SHINY)
+                    elif (i,j) in self.game_engine.selected_dots:
+                        pass                    
                     elif not point.occupied :
                         self.color_point(point,COLORPOINT)
     
@@ -291,7 +292,7 @@ class GameEngine:
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j)%2 == 0 :
-                    if self.board[i][j].degree > 1 :
+                    if self.board[i][j].can_be_clicked :
                         return False
         return True
     
