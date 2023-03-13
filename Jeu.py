@@ -22,6 +22,7 @@ COLORPOINT = "#416FEC"
 SHINY = "#fafa21"
 COLORPLAYER1 = "#008000"
 COLORPLAYER2 = "#ed1111"
+SAUSAGEWIDTH = 10
 
 class GameShow:
     def __init__(self,window):
@@ -79,10 +80,25 @@ class GameShow:
             #il faut aussi gérer la création de la saucisse côté cerveau
         pass
     
-    def draw_sausage(self,points):
+    def draw_sausage(self,dots):
         #dessine une saucisse étant donné un tuple de 3 points
-        #Je m'en occupe Lundi, j'suis pété là
-        pass
+        point1 = self.game_engine.canvas.coords(self.game_engine.board[dots[0][0]][dots[0][1]].id)
+        point2 = self.game_engine.canvas.coords(self.game_engine.board[dots[1][0]][dots[1][1]].id)
+        point3 = self.game_engine.canvas.coords(self.game_engine.board[dots[2][0]][dots[2][1]].id)
+
+        if self.game_engine.active_player == self.game_engine.list_player[0] : 
+            alpha = COLORPLAYER1 
+        else : 
+            alpha = COLORPLAYER2 
+
+        if len (self.game_engine.selected_dots) ==3: 
+            center1 = ((point1[2] + point1[0])/2,(point1[3] + point1[1])/2)
+            center2 = ((point2[2] + point2[0])/2,(point2[3] + point2[1])/2)
+            center3 = ((point3[2] + point3[0])/2,(point3[3] + point3[1])/2)
+
+            print(alpha)
+            self.canvas.create_line(center1[0],center1[1],center2[0],center2[1], fill= alpha, width=SAUSAGEWIDTH )
+            self.canvas.create_line(center2[0],center2[1],center3[0],center3[1], fill= alpha, width=SAUSAGEWIDTH )
     
     def highlight_points(self,dot_x,dot_y):
         #met en surbrillance les points accessibles depuis un point sélectionné
