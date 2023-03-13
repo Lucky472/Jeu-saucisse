@@ -85,9 +85,8 @@ class GameShow:
         point1 = self.game_engine.canvas.coords(self.game_engine.board[dots[0][0]][dots[0][1]].id)
         point2 = self.game_engine.canvas.coords(self.game_engine.board[dots[1][0]][dots[1][1]].id)
         point3 = self.game_engine.canvas.coords(self.game_engine.board[dots[2][0]][dots[2][1]].id)
-        print(point1,point2,point3)
 
-        if self.active_player == self.game_engine.list_player[0] : 
+        if self.game_engine.active_player == self.game_engine.list_player[0] : 
             alpha = COLORPLAYER1 
         else : 
             alpha = COLORPLAYER2 
@@ -96,8 +95,8 @@ class GameShow:
             center1 = ((point1[2] + point1[0])/2,(point1[3] + point1[1])/2)
             center2 = ((point2[2] + point2[0])/2,(point2[3] + point2[1])/2)
             center3 = ((point3[2] + point3[0])/2,(point3[3] + point3[1])/2)
-            print(center1,center2,center3)
 
+            print(alpha)
             self.canvas.create_line(center1[0],center1[1],center2[0],center2[1], fill= alpha, width=SAUSAGEWIDTH )
             self.canvas.create_line(center2[0],center2[1],center3[0],center3[1], fill= alpha, width=SAUSAGEWIDTH )
     
