@@ -29,7 +29,7 @@ class GameShow:
     def __init__(self,window):
         #Initialise l'interface graphique
         self.window = window
-        self.window.iconbitmap("IMAGE-SAUCISSE.ico")
+        #self.window.iconbitmap("IMAGE-SAUCISSE.ico")
         self.plateau = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTCANVAS)
         self.menu = Frame(self.window,width=WIDTHCANVAS,height=HEIGHTMENU)
         self.canvas = Canvas(self.plateau, width = WIDTHCANVAS,height=HEIGHTCANVAS,bg=COLORCANVAS,highlightthickness=3,highlightbackground=COLORPOINT)
@@ -52,7 +52,6 @@ class GameShow:
         self.label_text_next_to_active_player.pack(side=RIGHT)
         self.button_forfeit.pack(side = LEFT)
         self.button_undo.pack(side=LEFT, padx=WIDTHCANVAS//3)
-
         self.draw_board()
 
     def active_player_color(self):
@@ -80,7 +79,8 @@ class GameShow:
             for j in range(0,Y_AXIS_LENGTH):
                 if (i+j) %2 == 0:
                     self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
-    
+        self.highlight_points()
+                
     def on_click(self,evt):
         """
             S'occupe de tous les évéènements à appeller lors d'un clic
@@ -161,6 +161,7 @@ class GameShow:
         """
         for dot in self.game_engine.selected_dots:
             self.color_point(self.game_engine.board[dot[0]][dot[1]],COLORPOINT)
+        self.game_engine.update_all_degree()
         self.game_engine.reset_sausage()
         self.highlight_points()
 
