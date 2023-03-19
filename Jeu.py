@@ -74,10 +74,12 @@ class GameShow:
             pass
         
     def draw_board(self):
-        #parcours la liste et quand il y a un point il le dessine 
+        """
+        parcours la liste de points et crossings et quand il y a un point, le dessine 
+        """
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j) %2 == 0:
+                if self.game_engine.is_a_point(i,j):
                     self.game_engine.board[i][j].id = self.canvas.create_oval(XMIN+i*DIST-RADIUS,YMIN+j*DIST-RADIUS,XMIN+i*DIST+RADIUS,YMIN+j*DIST+RADIUS,fill = COLORPOINT)
         self.highlight_points()
                 
@@ -131,7 +133,7 @@ class GameShow:
         """
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j)%2 == 0 :
+                if self.game_engine.is_a_point(i,j):
                     point = self.game_engine.board[i][j]
                     if point.can_be_clicked :
                         self.color_point(point,SHINY)
@@ -141,7 +143,9 @@ class GameShow:
                         self.color_point(point,COLORPOINT)
     
     def color_point(self,point,color):
-        #change la couleur d'un point par la couleur donnée.
+        """
+        change la couleur d'un point par la couleur donnée.
+        """
         self.canvas.itemconfig(point.id,fill = color)
     
     def change_color_point(self):
@@ -212,7 +216,7 @@ class GameEngine:
     def update_dots_clickability(self):
         for dot_x in range(0,X_AXIS_LENGTH):
             for dot_y in range(0,Y_AXIS_LENGTH):
-                if (dot_x+dot_y)%2 == 0:
+                if self.is_a_point(dot_x,dot_y):
                     self.update_dot_clickability(dot_x,dot_y)
     
     def update_dot_clickability(self,dot_x,dot_y):
@@ -302,7 +306,7 @@ class GameEngine:
 
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j)%2 == 0:
+                if self.is_a_point(i,j):
                     point[i][j] = Point()
                 else:
                     point[i][j] = Crossing()
@@ -312,7 +316,7 @@ class GameEngine:
         #teste si des coups sont encore possibles sur le plateau
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j)%2 == 0 :
+                if self.is_a_point(i,j):
                     if self.board[i][j].can_be_clicked :
                         return False
         return True
@@ -325,7 +329,7 @@ class GameEngine:
         #update degree pour chaque point 
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j)%2 == 0:
+                if self.is_a_point(i,j):
                     self.update_degree(i,j)
     
     def check_coord_mouse(self,evt):
@@ -336,7 +340,7 @@ class GameEngine:
         y = evt.y
         for i in range(0,X_AXIS_LENGTH):
             for j in range(0,Y_AXIS_LENGTH):
-                if (i+j)%2 ==0:
+                if self.is_a_point(i,j):
                     point_coord = self.canvas.coords(self.board[i][j].id)
                     if self.is_in_point(x,y,point_coord):
                         return (i,j)
@@ -359,6 +363,12 @@ class GameEngine:
             self.active_player = self.list_player[1]
         else :
             self.active_player = self.list_player[0]
+        
+    def is_a_point(self,i,j):
+        if (i+j)%2 == 0:
+            return True
+        return False
+
 
 
 class Point:
@@ -381,24 +391,3 @@ root.title("SaucisseTheGame")
 game = GameShow(root)
 
 root.mainloop()
-
-
-
-
-
-"""Jeu"""        #Etats : en cours, fini
-        #self.activePlayer
-        #textvariable "pseudo"
-
-"""Plateau"""    #32 Points : 5 LIgnes --> 5 points ligne pair , 4 points ligne impair
-        #Autour : Joueur qui doit jouer , Timer pour les deux en haut et en bas
-
-"""Point"""      #Non selectionné, sélectionné, occupé, impossible
-        #non selectionné --> sélectionné --> occupé
-                    #clique              #3 pts cliqués
-
-"""Joueur"""     #survoler --> brillance = True
-        # relacher le clic --> occuper le point si possible
-        
-"""Saucisse"""   #Forme = Trait
-        #2 couleurs , 1 pour chaque joueur
